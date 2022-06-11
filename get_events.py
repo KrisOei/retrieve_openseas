@@ -38,6 +38,7 @@ while run:
     db.mfer.insert_one(response)
     i += 1
 
+# Add page logger so that we know where we left off
     print(f'Page {i} has been gotten')
     logging.info(f'Task {i} has been completed at {datetime.datetime.now()}')
 
