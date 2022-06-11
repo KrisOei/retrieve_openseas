@@ -6,7 +6,7 @@ load_dotenv()
 API_KEY = os.getenv('API_KEY')
 
 contractAddress = '0x79FCDEF22feeD20eDDacbB2587640e45491b757f'
-eventType = 'transfer'
+eventType = 'successful'
 
 # Connect to databse
 client = MongoClient('mongodb://localhost:27017')
@@ -16,8 +16,8 @@ db.mfer
 # Setup Logging
 logging.basicConfig(filename='tasks.log', level=logging.INFO)
 
-def get_event(token_id):
-    url = f"https://api.opensea.io/api/v1/events?token_id={token_id}&asset_contract_address={contractAddress}&collection_slug=mfers&event_type={eventType}"
+def get_event(token_id, dateTimeEpoch):
+    url = f"https://api.opensea.io/api/v1/events?asset_contract_address={contractAddress}&event_type={eventType}&occurred_before={dateTimeEpoch}"
 
     headers = { 
     "Accept": "application/json",
@@ -28,10 +28,17 @@ def get_event(token_id):
     data = response.json()
     return data
 
+# Start at 12/1/21
+def convertDate(year, month, day):
+    dateTimeEpoch = datetime.datetime(year, month, day).timestamp()
+    return dateTimeEpoch
+
+
 for i in range(0, 10):
     time.sleep(1)
     token_id = i + 1
-    data = get_event(token_id)
+    d = convertDate(2021, 11, 30)
+    data = get_event(token_id, d)
     db.mfer.insert_one(data)
 
     print(f'{token_id} tokens completed')
