@@ -1,4 +1,4 @@
-import requests, dotenv, time, os, json, logging, datetime
+import requests, time, os, json, logging, datetime
 from dotenv import load_dotenv
 from pymongo import MongoClient, mongo_client
 
@@ -45,6 +45,7 @@ while run:
     # Break Condition
     if response['next'] is None:
         run = False
+        print(f'Completed at {datetime.datetime.now()}')
     else:
         next = response['next']
     time.sleep(1)
