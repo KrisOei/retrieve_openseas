@@ -6,6 +6,7 @@ load_dotenv()
 API_KEY = os.getenv('API_KEY')
 
 contractAddress = '0x79FCDEF22feeD20eDDacbB2587640e45491b757f'
+eventType = 'transfer'
 
 # Connect to databse
 client = MongoClient('mongodb://localhost:27017')
@@ -16,7 +17,7 @@ db.mfer
 logging.basicConfig(filename='tasks.log', level=logging.INFO)
 
 def get_event(token_id):
-    url = f"https://api.opensea.io/api/v1/events?token_id={token_id}&asset_contract_address={contractAddress}&collection_slug=mfers&event_type=transfer"
+    url = f"https://api.opensea.io/api/v1/events?token_id={token_id}&asset_contract_address={contractAddress}&collection_slug=mfers&event_type={eventType}"
 
     headers = { 
     "Accept": "application/json",
