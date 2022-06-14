@@ -7,8 +7,8 @@ API_KEY = os.getenv('API_KEY')
 
 # Connect to databse
 client = MongoClient('mongodb://localhost:27017')
-db = client.azuki_events
-db.azuki
+db = client.witches_events
+db.witch
 
 # logging
 logging.basicConfig(filename='tasks.log', level=logging.INFO)
@@ -16,7 +16,7 @@ logging.basicConfig(filename='tasks.log', level=logging.INFO)
 # We want to get all events within the following dates: 12/1/21 - 6/1/22, the API takes dates in Unix Epoch
 # The API also returns limited data so to get it all without exausting all requests we will need to use Cursor Pagination
 
-def get_events(cursor, assetContract = '0xED5AF388653567Af2F388E6224dC7C4b3241C544', eventType = 'successful', beforeDate = '1655042474', afterDate = '1641171674', **kwargs):
+def get_events(cursor, assetContract = '0x5180db8F5c931aaE63c74266b211F580155ecac8', eventType = 'successful', beforeDate = '1655061903', afterDate = '1636140303', **kwargs):
     url = f"https://api.opensea.io/api/v1/events?asset_contract_address={assetContract}&event_type={eventType}&occurred_before={beforeDate}&occurred_after={afterDate}&cursor={cursor}"
 
     headers = {
@@ -30,7 +30,6 @@ def get_events(cursor, assetContract = '0xED5AF388653567Af2F388E6224dC7C4b3241C5
 
 run = True
 next = ''
-result = list()
 i = 0
 
 while run:
@@ -48,4 +47,4 @@ while run:
         print(f'Completed at {datetime.datetime.now()}')
     else:
         next = response['next']
-    time.sleep(1)
+    time.sleep(.5)
