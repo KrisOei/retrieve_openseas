@@ -29,7 +29,7 @@ def get_events(cursor, assetContract = '0x79FCDEF22feeD20eDDacbB2587640e45491b75
     return response
 
 run = True
-next = 'LWV2ZW50X3RpbWVzdGFtcD0yMDIyLTA2LTE0KzA0JTNBMzIlM0ExNi40OTUxMTUmLXBrPTY4NzMyNTM5Nzc='
+next = 'LWV2ZW50X3RpbWVzdGFtcD0yMDIyLTA2LTExKzAyJTNBMDglM0EzNi44MjQxNjkmLXBrPTY4MDMzOTU4Nzc='
 i = 0
 
 while run:
@@ -47,4 +47,4 @@ while run:
         print(f'Completed at {datetime.datetime.now()}')
     else:
         next = response['next']
-    time.sleep(.5)
+    time.sleep(.33)
