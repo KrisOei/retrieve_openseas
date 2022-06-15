@@ -29,7 +29,7 @@ def get_events(cursor, assetContract = '0x79FCDEF22feeD20eDDacbB2587640e45491b75
     return response
 
 run = True
-next = 'LWV2ZW50X3RpbWVzdGFtcD0yMDIyLTA2LTE0KzE4JTNBNTIlM0E0OS40MzY5NjUmLXBrPTY4ODcwMTYwMjU='
+next = 'LWV2ZW50X3RpbWVzdGFtcD0yMDIyLTA2LTE0KzA0JTNBMzIlM0ExNi40OTUxMTUmLXBrPTY4NzMyNTM5Nzc='
 i = 0
 
 while run:
