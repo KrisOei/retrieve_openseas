@@ -7,8 +7,8 @@ API_KEY = os.getenv('API_KEY')
 
 # Connect to databse
 client = MongoClient('mongodb://localhost:27017')
-db = client.witches_events
-db.witch
+db = client.mfers_events
+db.mfer
 
 # logging
 logging.basicConfig(filename='tasks.log', level=logging.INFO)
@@ -16,8 +16,8 @@ logging.basicConfig(filename='tasks.log', level=logging.INFO)
 # We want to get all events within the following dates: 12/1/21 - 6/1/22, the API takes dates in Unix Epoch
 # The API also returns limited data so to get it all without exausting all requests we will need to use Cursor Pagination
 
-def get_events(cursor, assetContract = '0x5180db8F5c931aaE63c74266b211F580155ecac8', eventType = 'successful', beforeDate = '1655061903', afterDate = '1636140303', **kwargs):
-    url = f"https://api.opensea.io/api/v1/events?asset_contract_address={assetContract}&event_type={eventType}&occurred_before={beforeDate}&occurred_after={afterDate}&cursor={cursor}"
+def get_events(cursor, assetContract = '0x79FCDEF22feeD20eDDacbB2587640e45491b757f', eventType = 'offer_entered', beforeDate = '1655237234', **kwargs):
+    url = f"https://api.opensea.io/api/v1/events?asset_contract_address={assetContract}&event_type={eventType}&occurred_before={beforeDate}&cursor={cursor}"
 
     headers = {
     "Accept": "application/json",
@@ -29,12 +29,12 @@ def get_events(cursor, assetContract = '0x5180db8F5c931aaE63c74266b211F580155eca
     return response
 
 run = True
-next = ''
+next = 'LWV2ZW50X3RpbWVzdGFtcD0yMDIyLTA2LTE0KzE4JTNBNTIlM0E0OS40MzY5NjUmLXBrPTY4ODcwMTYwMjU='
 i = 0
 
 while run:
     response = get_events(cursor=next)
-    db.azuki.insert_one(response)
+    db.mfer.insert_one(response)
     i += 1
 
 # Add page logger so that we know where we left off
