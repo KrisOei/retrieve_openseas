@@ -7,13 +7,13 @@ API_KEY = os.getenv('API_KEY')
 
 # Connect to databse
 client = MongoClient('mongodb://localhost:27017')
-db = client.azukis_events
-db.azuki
+db = client.BAYC_events
+db.apes
 
 # logging
 logging.basicConfig(filename='tasks.log', level=logging.INFO)
 
-def get_events(cursor, eventType, assetContract = '0xED5AF388653567Af2F388E6224dC7C4b3241C544', **kwargs):
+def get_events(cursor, eventType, assetContract = '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D', **kwargs):
     url = f"https://api.opensea.io/api/v1/events?asset_contract_address={assetContract}&event_type={eventType}&cursor={cursor}"
 
     headers = {
@@ -35,7 +35,7 @@ def get_data(ev):
     i = 0   
     while run:
         response = get_events(cursor=next, eventType=ev)
-        db.azuki.insert_one(response)
+        db.apes.insert_one(response)
         i += 1
 
     # Add page logger so that we know where we left off
