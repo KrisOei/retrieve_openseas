@@ -3,6 +3,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
+import datetime
+import re
+import base64
 
 @st.cache
 def get_data():
@@ -14,7 +17,7 @@ def get_data():
     df.drop('Unnamed: 0', axis=1, inplace=True)
     df.drop('collection_slug', axis=1,inplace=True)
     df.drop('asset_contract_date', axis=1, inplace=True)
-    df['event_timestamp'] = pd.to_datetime(df['event_timestamp']).dt.strftime('%m/%d/%Y %H:%M')
+    df['event_timestamp'] = pd.to_datetime(df['event_timestamp'])
     df.drop_duplicates(keep='first')
 
     df.set_index(df['event_timestamp'], inplace=True)
@@ -60,6 +63,7 @@ st.title('NFT Collection Data')
 
 with st.form("Filters"):
     with st.sidebar:
+        st.title('Collection Filter')
 
         event_filter = st.multiselect('Enter Event Name', event_name)
         df_filtered = df_filtered[(df_filtered['Event Type'].isin(event_filter))]
@@ -69,10 +73,12 @@ with st.form("Filters"):
 
         submitted = st.form_submit_button("Submit")
 
+# Graph
+df_ = df_filtered.resample('D').apply({'Owner Address':'count'})
+fig, ax = plt.subplots()
+ax.plot(df_)
+
+st.pyplot(fig)
 st.write(df_filtered)
-st.write(df_filtered)
-st.write(event_filter)
-st.write(collection_filter)
 
 #df = df[(df['event_timestamp'] > '2022-01-17T10:00:00') & (df['event_timestamp'] < '2022-02-17T12:00:00')]
-#df = df[df['event_type'] == 'successful']
