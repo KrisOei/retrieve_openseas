@@ -71,6 +71,11 @@ with st.form("Filters"):
         collection_filter = st.multiselect('Enter Collection Name', collection_name)
         df_filtered = df_filtered[(df_filtered['Collection Name'].isin(collection_filter))]
 
+        start = st.date_input('Select Start Date').strftime('%Y-%m-%dT00:00:00')
+        end = st.date_input('Select End Date').strftime('%Y-%m-%dT00:00:00')
+
+        df_filtered = df_filtered.loc[start:end]
+
         submitted = st.form_submit_button("Submit")
 
 # Graph
@@ -80,5 +85,3 @@ ax.plot(df_)
 
 st.pyplot(fig)
 st.write(df_filtered)
-
-#df = df[(df['event_timestamp'] > '2022-01-17T10:00:00') & (df['event_timestamp'] < '2022-02-17T12:00:00')]
