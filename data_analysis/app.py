@@ -53,7 +53,7 @@ df_filtered = pd.DataFrame()
 df_filtered['Collection Name'] = df['collection_name']
 df_filtered['Asset Name'] = df['asset_name']
 df_filtered['Username'] = df['owner_username']
-df_filtered['Owner Address'] = df['owner_address']
+df_filtered['Owner_Address'] = df['owner_address']
 df_filtered['Event Type'] = df['event_type']
 
 # App Body
@@ -77,11 +77,107 @@ with st.form("Filters"):
         submitted = st.form_submit_button("Submit")
 
 # Graph
-df_ = df_filtered.resample('D').apply({'Owner Address':'count'})
+df_ = df_filtered.resample('D').apply({'Owner_Address':'count'})
+
+az = 'Azuki'
+ba = 'Bored Ape Yacht Club'
+mf = 'mfers'
+cc = 'Crypto Coven'
+
+az = df_filtered[df_filtered['Collection Name'] == az].Owner_Address.unique()
+ba = df_filtered[df_filtered['Collection Name'] == ba].Owner_Address.unique()
+mf = df_filtered[df_filtered['Collection Name'] == mf].Owner_Address.unique()
+cc = df_filtered[df_filtered['Collection Name'] == cc].Owner_Address.unique()
+iaz_count = az.shape[0]
+iba_count = ba.shape[0]
+imf_count = mf.shape[0]
+icc_count = cc.shape[0]
+a = df_filtered[df_filtered['Owner_Address'].isin(df_filtered['Owner_Address'].value_counts()[df_filtered['Owner_Address'].value_counts() > 1].index)].Owner_Address.unique()
+
+df_a = pd.DataFrame()
+mf_cc = list()
+mf_ba = list()
+mf_az = list()
+cc_ba = list()
+cc_az = list()
+ba_az = list()
+
+i = 0
+I1 = 0
+I2 = 0
+I3 = 0
+I4 = 0
+I5 = 0
+I6 = 0
+ 
+for owner in a:
+    temp = df_filtered[df_filtered['Owner_Address'] == a[i]]
+
+    temp.reset_index(inplace=True)
+    address = temp.Owner_Address[0]
+
+    df_a = df_a.append(temp)
+
+    mf_count = (temp[temp['Collection Name'] == 'mfers'].count())
+    mf = mf_count['Collection Name']
+
+    cc_count = (temp[temp['Collection Name'] == 'Crypto Coven'].count())
+    cc = cc_count['Collection Name']
+
+    ba_count = (temp[temp['Collection Name'] == 'Bored Ape Yacht Club'].count())
+    ba = ba_count['Collection Name']
+
+    az_count = (temp[temp['Collection Name'] == 'Azuki'].count())
+    az = az_count['Collection Name']
+
+    # I1 = MF & CC
+    # I2 = MF & BA
+    # I3 = MF & AZ
+    # I4 = CC & BA
+    # I5 = CC & AZ
+    # I6 = BA & AZ
+
+    if ((mf > 0) & (cc > 0)):
+        I1 += 1
+        mf_cc.append(address)
+    elif ((mf > 0) & (ba > 0)):
+        I2 += 1
+        mf_ba.append(address)
+    elif ((mf > 0) & (az > 0)):
+        I3 += 1
+        mf_az.append(address)
+    elif ((cc > 0) & (ba > 0)):
+        I4 += 1
+        cc_ba.append(address)
+    elif ((cc > 0) & (az > 0)):
+        I5 += 1
+        cc_az.append(address)
+    elif ((ba > 0) & (az > 0)):
+        I6 += 1
+        ba_az.append(address)
+    i += 1
+
+data = {'Azuki': iaz_count, 'Azuki & BAYC': I6 , 'Bored Ape Yacht Club': iba_count, 'BAYC & mfers':I2,'mfers': imf_count, 'mfers & Crypto Coven':I1, 'mfers & Azuki':I3 , 'Crypto Coven':icc_count, 'Crypto Coven & Azuki': I5, 'Crypto Coven & BAYC':I4 }
+inter = [I1, I2, I3, I4, I5, I6]
+# Intersection
+# azuki = 'Azuki'
+# bapes = 'Bored Ape Yacht Club'
+# mfer = 'mfers'
+# ccoven = 'Crypto Coven'
+
+intersection = 0
+
+for el in inter:
+    if el > 0:
+        intersection = el
+
 fig, ax = plt.subplots()
-venn2(subsets = (8, 7, 2), set_labels = ('Group A', 'Group B'))
+venn2(subsets = (data[collection_filter[0]], data[collection_filter[1]], intersection), set_labels = (collection_filter[0], collection_filter[1]))
+
+
+fig2, ax = plt.subplots()
 plt.show()
 ax.plot(df_)
-
 st.pyplot(fig)
 st.write(df_filtered)
+st.pyplot(fig2)
