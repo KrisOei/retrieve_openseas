@@ -3,9 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
-import datetime
-import re
-import base64
+from matplotlib_venn import venn2
 
 @st.cache
 def get_data():
@@ -81,6 +79,8 @@ with st.form("Filters"):
 # Graph
 df_ = df_filtered.resample('D').apply({'Owner Address':'count'})
 fig, ax = plt.subplots()
+venn2(subsets = (8, 7, 2), set_labels = ('Group A', 'Group B'))
+plt.show()
 ax.plot(df_)
 
 st.pyplot(fig)
