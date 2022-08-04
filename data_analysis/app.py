@@ -130,13 +130,6 @@ for owner in a:
     az_count = (temp[temp['Collection Name'] == 'Azuki'].count())
     az = az_count['Collection Name']
 
-    # I1 = MF & CC
-    # I2 = MF & BA
-    # I3 = MF & AZ
-    # I4 = CC & BA
-    # I5 = CC & AZ
-    # I6 = BA & AZ
-
     if ((mf > 0) & (cc > 0)):
         I1 += 1
         mf_cc.append(address)
@@ -159,11 +152,6 @@ for owner in a:
 
 data = {'Azuki': iaz_count, 'Azuki & BAYC': I6 , 'Bored Ape Yacht Club': iba_count, 'BAYC & mfers':I2,'mfers': imf_count, 'mfers & Crypto Coven':I1, 'mfers & Azuki':I3 , 'Crypto Coven':icc_count, 'Crypto Coven & Azuki': I5, 'Crypto Coven & BAYC':I4 }
 inter = [I1, I2, I3, I4, I5, I6]
-# Intersection
-# azuki = 'Azuki'
-# bapes = 'Bored Ape Yacht Club'
-# mfer = 'mfers'
-# ccoven = 'Crypto Coven'
 
 intersection = 0
 
