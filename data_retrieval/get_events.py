@@ -7,13 +7,13 @@ API_KEY = os.getenv('API_KEY')
 
 # Connect to databse
 client = MongoClient('mongodb://localhost:27017')
-db = client.coven_events
-db.witch
+db = client.artblocks
+db.art
 
 # logging
 logging.basicConfig(filename='tasks.log', level=logging.INFO)
 
-def get_events(cursor, eventType, assetContract = '0x5180db8F5c931aaE63c74266b211F580155ecac8', **kwargs):
+def get_events(cursor, eventType, assetContract = '0xa7d8d9ef8D8Ce8992Df33D8b8CF4Aebabd5bD270', **kwargs):
     url = f"https://api.opensea.io/api/v1/events?asset_contract_address={assetContract}&event_type={eventType}&cursor={cursor}"
 
     headers = {
@@ -35,7 +35,7 @@ def get_data(ev):
     i = 0   
     while run:
         response = get_events(cursor=next, eventType=ev)
-        db.witch.insert_one(response)
+        db.art.insert_one(response)
         i += 1
 
     # Add page logger so that we know where we left off
