@@ -164,8 +164,5 @@ venn2(subsets = (data[collection_filter[0]], data[collection_filter[1]], interse
 
 
 fig2, ax = plt.subplots()
-plt.show()
-ax.plot(df_)
-st.pyplot(fig)
-st.write(df_filtered)
 st.pyplot(fig2)
+st.write(df_filtered)
