@@ -1,10 +1,7 @@
-from turtle import width
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-import numpy as np
-import seaborn as sns
-from matplotlib_venn import venn2
+import time
 
 @st.cache
 def get_data():
@@ -22,17 +19,6 @@ def get_data():
     df.set_index(df['event_timestamp'], inplace=True)
     return df
 df = get_data()
-
-@st.cache
-def collection_name():
-    collection_name = {
-        'Azuki': 'Azuki',
-        'Bored Ape Yacht Club': 'Bored Ape Yacht Club',
-        'mfers': 'mfers',
-        'Crypto Coven': 'Crypto Coven'
-    }
-    return collection_name
-collection_name = collection_name()
 
 @st.cache
 def event_name():
@@ -57,6 +43,11 @@ df_filtered['Username'] = df['owner_username']
 df_filtered['Owner_Address'] = df['owner_address']
 df_filtered['Event Type'] = df['event_type']
 
+df_bayc = pd.DataFrame()
+df_cc = pd.DataFrame()
+df_mfers = pd.DataFrame()
+df_azuki = pd.DataFrame()
+
 # App Body
 st.title('NFT Collection Data')
 
@@ -64,26 +55,62 @@ with st.form("Filters"):
     with st.sidebar:
         st.title('Collection Filter')
 
-        event_filter = st.multiselect('Enter Event Name', event_name)
-        df_filtered = df_filtered[(df_filtered['Event Type'].isin(event_filter))]
-
-        collection_filter = st.multiselect('Enter Collection Name', collection_name)
-        df_filtered = df_filtered[(df_filtered['Collection Name'].isin(collection_filter))]
-
         start = st.date_input('Select Start Date').strftime('%Y-%m-%dT00:00:00')
         end = st.date_input('Select End Date').strftime('%Y-%m-%dT00:00:00')
 
         df_filtered = df_filtered.loc[start:end]
 
+
+        event_filter = st.multiselect('Enter Event Name', event_name)
+        df_filtered = df_filtered[(df_filtered['Event Type'].isin(event_filter))]
+
+        st.write('Enter Collection Name')
+
+        azuki = st.checkbox('Azuki', value=False)
+        if (azuki):
+            df_azuki = df_filtered[df_filtered['Collection Name'] == 'Azuki']
+            df_azuki = df_azuki.resample('D').apply({'Owner_Address':'count'})
+
+        bayc  = st.checkbox('BAYC')
+        if (bayc):
+            df_bayc = df_filtered[df_filtered['Collection Name'] == 'Bored Ape Yacht Club']
+            df_bayc = df_bayc.resample('D').apply({'Owner_Address':'count'})
+
+        mfers = st.checkbox('mfers')
+        if (mfers):
+            df_mfers = df_filtered[df_filtered['Collection Name'] == 'mfers']
+            df_mfers = df_mfers.resample('D').apply({'Owner_Address':'count'})
+
+        cc = st.checkbox('Crypto Coven')
+        if (cc):
+            df_cc = df_filtered[df_filtered['Collection Name'] == 'Crypto Coven']
+            df_cc = df_cc.resample('D').apply({'Owner_Address':'count'})
+
         submitted = st.form_submit_button("Submit")
 
-df_graph = df_filtered.resample('D').apply({'Owner_Address':'count'})
+        # Progress Bar
+        my_bar = st.progress(0)
+
+        for percent_complete in range(100):
+            time.sleep(0.1)
+            my_bar.progress(percent_complete + 1)
 
 fig = plt.figure(figsize=(1, 5))
 
-plt.plot(df_graph)
+if (len(df_azuki) > 0):
+    plt.plot(df_azuki)
+    df_filtered = df_filtered[df_filtered['Collection Name'] == 'Azuki']
+if (len(df_bayc) > 0):
+    plt.plot(df_bayc)
+    df_filtered = df_filtered[df_filtered['Collection Name'] == 'Bored Ape Yacht Club']
+if (len(df_mfers) > 0):
+    plt.plot(df_mfers)
+    df_filtered = df_filtered[df_filtered['Collection Name'] == 'mfers']
+if (len(df_cc) > 0):
+    plt.plot(df_cc)
+    df_filtered = df_filtered[df_filtered['Collection Name'] == 'Crypto Coven']
 
 st.plotly_chart(fig, use_container_width=True)
 
-st.write(df_filtered)
+st.dataframe(df_filtered)
 
